@@ -7,10 +7,18 @@ This project was generated with the [Angular Full-Stack Generator](https://githu
 ### Prerequisites
 
 - [Git](https://git-scm.com/)
-- [Node.js and npm](nodejs.org) Node ^4.2.3, npm ^2.14.7
+- [Node.js and npm](nodejs.org) Node ^4.4.0, npm ^2.14.20
 - [Bower](bower.io) (`npm install --global bower`)
 - [Grunt](http://gruntjs.com/) (`npm install --global grunt-cli`)
-- [SQLite](https://www.sqlite.org/quickstart.html)
+- [Postgres - 9.4.5](http://www.postgresql.org/) (`brew install postgres`)
+
+#### Database Setup
+1. `CREATE DATABASE cinema_coordinator_dev;`
+1. `CREATE DATABASE cinema_coordinator_test;`
+1. `CREATE ROLE cinema_coordinator_user WITH PASSWORD 'password' LOGIN;`
+1. `GRANT ALL ON DATABASE cinema_coordinator_dev TO cinema_coordinator_user;`
+1. `GRANT ALL ON DATABASE cinema_coordinator_test TO cinema_coordinator_user;`
+
 
 ### Developing
 

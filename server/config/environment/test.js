@@ -3,15 +3,10 @@
 // Test specific configuration
 // ===========================
 module.exports = {
-  // MongoDB connection options
-  mongo: {
-    uri: 'mongodb://localhost/cinemacoordinator-test'
-  },
   sequelize: {
-    uri: 'sqlite://',
+    uri: process.env.CINEMA_COORDINATOR_TEST_DATABASE_URL,
     options: {
       logging: false,
-      storage: 'test.sqlite',
       define: {
         timestamps: false
       }

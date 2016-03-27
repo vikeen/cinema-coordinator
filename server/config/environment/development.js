@@ -6,10 +6,9 @@ module.exports = {
 
   // Sequelize connection opions
   sequelize: {
-    uri: 'sqlite://',
+    uri: process.env.CINEMA_COORDINATOR_DEVELOPMENT_DATABASE_URL,
     options: {
       logging: false,
-      storage: 'dev.sqlite',
       define: {
         timestamps: false
       }
