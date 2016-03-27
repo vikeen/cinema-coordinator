@@ -15,15 +15,6 @@
   "disallowSpaceAfterPrefixUnaryOperators": ["++", "--", "+", "-", "~", "!"],
   "disallowSpaceBeforeBinaryOperators": [","],
   "disallowSpaceBeforePostfixUnaryOperators": ["++", "--"],
-  "disallowSpacesInAnonymousFunctionExpression": {
-    "beforeOpeningRoundBrace": true
-  },
-  "disallowSpacesInFunctionDeclaration": {
-    "beforeOpeningRoundBrace": true
-  },
-  "disallowSpacesInNamedFunctionExpression": {
-    "beforeOpeningRoundBrace": true
-  },
   "disallowSpacesInsideArrayBrackets": true,
   "disallowSpacesInsideParentheses": true,
   "disallowTrailingComma": true,
