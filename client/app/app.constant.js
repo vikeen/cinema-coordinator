@@ -2,8 +2,8 @@
 'use strict';
 
 angular.module('cinemaCoordinatorApp.constants', [])
-  .constant('appConfig', {
-    userRoles: ['guest', 'user', 'admin']
-  });
-  
+
+.constant('appConfig', {userRoles:['guest','user','admin']})
+
+;
 })(angular);
