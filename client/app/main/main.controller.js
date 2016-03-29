@@ -4,18 +4,34 @@
 
 class MainController {
 
-  constructor($http) {
-    this.$http = $http;
-    this.awesomeThings = [];
+  constructor($log, TvMazeService) {
+    this.$log = $log;
+    this.TvMazeService = TvMazeService;
+    this.search="Game of";
+    this.shows = [];
   }
 
-  $onInit() {}
+  $onInit() {
+    this.onCinemaSearchSubmit("Game of");
+  }
+
+  onCinemaSearchSubmit(search) {
+    this.TvMazeService.shows(search)
+      .then(shows => {
+        this.shows = shows;
+      })
+      .catch(err => {
+        this.$log.error(err);
+        this.error = err;
+      });
+  }
 }
 
 angular.module('cinemaCoordinatorApp')
   .component('main', {
     templateUrl: 'app/main/main.html',
-    controller: MainController
+    controller: MainController,
+    controllerAs: "vm"
   });
 
 })();

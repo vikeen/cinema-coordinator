@@ -1,7 +1,47 @@
-<header class="hero-unit" id="banner">
+<div class="main">
+  <div class="jumbotron">
   <div class="container">
-    <h1>'Allo, 'Allo!</h1>
-    <p class="lead">Kick-start your next web app with Angular Fullstack</p>
-    <img src="assets/images/yeoman.png" alt="I'm Yeoman">
+    <h1 class="main__title">Find Cinema</h1>
+    <form class="main__search-form form form-inline" ng-submit="vm.onCinemaSearchSubmit(vm.search)">
+      <fieldset>
+        <div class="form-group">
+          <input class="form-control" ng-model="vm.search" placeholder="tv show title" required="required" autofocus="autofocus"/>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </fieldset>
+    </form>
   </div>
-</header>
+  </div>
+  <div class="container">
+    <table class="table" ng-if="vm.shows.length">
+      <thead>
+      <tr>
+        <th><!-- image --></th>
+        <th>Name</th>
+        <th class="text-right">Premiered</th>
+        <th>Genres</th>
+        <th>Summary</th>
+        <th class="text-right"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="show in vm.shows">
+        <td>
+          <img class="main__show-image" ng-src="{{show.image.medium || show.image.original}}"/>
+        </td>
+        <td>{{show.name}}</td>
+        <td class="text-right">{{show.premiered |date:'yyyy'}}</td>
+        <td>
+          <span class="main__show-genre label label-primary" ng-repeat="genre in show.genres">{{genre}}</span>
+        </td>
+        <td ng-bind-html="show.summary | limitTo:200"></td>
+        <td class="text-right">
+          <button class="btn btn-success">Add</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
