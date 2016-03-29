@@ -393,6 +393,7 @@ module.exports = function (grunt) {
           src: [
             'package.json',
             '.sequelizerc',
+            'migrations/**/*',
             '<%= yeoman.server %>/**/*'
           ]
         }]
