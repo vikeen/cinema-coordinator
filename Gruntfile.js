@@ -392,6 +392,7 @@ module.exports = function (grunt) {
           dest: '<%= yeoman.dist %>',
           src: [
             'package.json',
+            '.sequelizerc',
             '<%= yeoman.server %>/**/*'
           ]
         }]
