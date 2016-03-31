@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <h2>{{vm.show.name}}</h2>
+</div>
+<div class="modal-body">
+  <form>
+    <fieldset>
+      <legend>Create Card (Trello)</legend>
+      <div class="form-group col-xs-12 col-sm-6">
+        <label>Board</label>
+        <select class="form-control"
+                ng-model="vm.board"
+                ng-change="vm.fetchListsForBoard(vm.board)"
+                ng-options="board.name for board in vm.boards track by board.id"></select>
+      </div>
+      <div class="form-group col-xs-12 col-sm-6">
+        <label>List</label>
+        <select class="form-control"
+                ng-model="vm.list"
+                ng-options="list.name for list in vm.lists track by list.id"></select>
+      </div>
+    </fieldset>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success" type="button" ng-click="vm.ok(vm.show)">Create</button>
+  <button class="btn btn-default" type="button" ng-click="vm.cancel()">Cancel</button>
+</div>
