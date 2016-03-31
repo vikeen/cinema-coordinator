@@ -4,11 +4,11 @@
 
   class MainController {
 
-    constructor($log, TvMazeService, TrelloService, $uibModal) {
+    constructor($log, TvMazeService, TrelloService, CreateCinemaModal) {
       this.$log = $log;
       this.TvMazeService = TvMazeService;
       this.TrelloService = TrelloService;
-      this.$uibModal = $uibModal;
+      this.CreateCinemaModal = CreateCinemaModal;
       this.search = "Game of";
       this.shows = [];
     }
@@ -29,59 +29,7 @@
     }
 
     openAddCinemaModel(show) {
-      let self = this;
-
-
-      self.$uibModal.open({
-          templateUrl: 'app/main/create_cinema_card.html',
-          controller: function (TrelloService, $uibModalInstance) {
-            let vm = this;
-
-            vm.fetchListsForBoard = fetchListsForBoard;
-            vm.ok = ok;
-            vm.cancel = cancel;
-
-            activate();
-
-            ///////////////
-
-            function activate() {
-              vm.show = show;
-              vm.boards = [];
-              vm.board = {};
-              vm.lists = [];
-              vm.list = {};
-
-              TrelloService.authorize().then(function () {
-                TrelloService.boards().then(function (boards) {
-                  vm.boards = boards;
-                  vm.board = boards[0] || {};
-
-                  vm.fetchListsForBoard(vm.board);
-                });
-              });
-            }
-
-            function ok(show) {
-              TrelloService.createCinemaCard(show.name, show.summary, vm.list.id).then(function () {
-                $uibModalInstance.close();
-              });
-            }
-
-            function cancel() {
-              return $uibModalInstance.dismiss("cancel");
-            }
-
-            function fetchListsForBoard(board) {
-              TrelloService.boardLists(board.id).then(function (boardLists) {
-                vm.lists = boardLists;
-                vm.list = boardLists[0] || {};
-              });
-            }
-          },
-          controllerAs: "vm"
-        }
-      );
+      this.CreateCinemaModal.openAddCinemaModel(show);
     }
   }
 

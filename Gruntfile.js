@@ -116,7 +116,7 @@ module.exports = function (grunt) {
       bower: {
         files: ['bower.json'],
         tasks: ['wiredep']
-      },
+      }
     },
 
     // Make sure code styles are up to par and there are no obvious mistakes
