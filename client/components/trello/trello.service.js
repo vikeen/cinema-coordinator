@@ -6,6 +6,8 @@
     const service = {
       authorize: authorize,
       createCinemaCard: createCinemaCard,
+      addChecklistToCard: addChecklistToCard,
+      addItemToChecklist: addItemToChecklist,
       me: me,
       boards: boards,
       board: board,
@@ -77,6 +79,34 @@
       let deferred = $q.defer();
 
       Trello.get("/boards/" + id + "/lists", function (response) {
+        return deferred.resolve(response);
+      }, function (error) {
+        return deferred.reject(error);
+      });
+
+      return deferred.promise;
+    }
+
+    function addChecklistToCard(name, cardId) {
+      let deferred = $q.defer(),
+        newChecklist = {
+          idCard: cardId,
+          name: $filter("stripHtml")(name)
+        };
+
+      Trello.post("/checklists", newChecklist, function (response) {
+        return deferred.resolve(response);
+      }, function (error) {
+        return deferred.reject(error);
+      });
+
+      return deferred.promise;
+    }
+
+    function addItemToChecklist(checklistId, item) {
+      let deferred = $q.defer();
+
+      Trello.post("/checklists/" + checklistId + "/checkItems", item, function (response) {
         return deferred.resolve(response);
       }, function (error) {
         return deferred.reject(error);

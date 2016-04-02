@@ -5,7 +5,8 @@
   function TvMazeService($http) {
     var uri = "http://api.tvmaze.com";
     var service = {
-      shows: shows
+      shows: shows,
+      episodesByShowId: episodesByShowId
     };
 
     function shows(search) {
@@ -15,6 +16,12 @@
             return show.show
           })
         });
+    }
+
+    function episodesByShowId(id) {
+      return $http.get(uri + "/shows/" + id + "/episodes").then(episodes => {
+        return episodes.data;
+      });
     }
 
     return service;

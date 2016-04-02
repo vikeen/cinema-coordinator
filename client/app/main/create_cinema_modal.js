@@ -25,9 +25,10 @@
 
   class CreateCinemaModalController {
 
-    constructor(TrelloService, $uibModalInstance, show) {
+    constructor(TrelloService, $uibModalInstance, show, TvMazeService) {
       const self = this;
 
+      self.TvMazeService = TvMazeService;
       self.TrelloService = TrelloService;
       self.$uibModalInstance = $uibModalInstance;
       self.show = show;
@@ -35,6 +36,10 @@
       self.board = {};
       self.lists = [];
       self.list = {};
+
+      self.TvMazeService.episodesByShowId(self.show.id).then(function (episodes) {
+        self.show.episodes = episodes;
+      });
 
       self.TrelloService.authorize().then(function () {
         self.TrelloService.boards().then(function (boards) {
@@ -50,8 +55,15 @@
     ok(show) {
       const self = this;
 
-      self.TrelloService.createCinemaCard(show.name, show.summary, self.list.id).then(function () {
-        self.$uibModalInstance.close();
+      self.TrelloService.createCinemaCard(show.name, show.summary, self.list.id).then(function (card) {
+        self.TrelloService.addChecklistToCard("Episodes", card.id).then(function (checklist) {
+          self.show.episodes.forEach(function (episode) {
+            self.TrelloService.addItemToChecklist(checklist.id, {
+              name: "s" + episode.season + "e" + episode.number + " - " + episode.name
+            });
+          // self.$uibModalInstance.close();
+          });
+        });
       });
     }
 
