@@ -4,6 +4,8 @@
 // ==================================
 module.exports = {
 
+  amqp: process.env.CINEMA_COORDINATOR_RABBIT_BIGWIG_URL,
+
   // Sequelize connection opions
   sequelize: {
     uri: process.env.CINEMA_COORDINATOR_DEVELOPMENT_DATABASE_URL,

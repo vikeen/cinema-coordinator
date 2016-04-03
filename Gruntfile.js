@@ -393,6 +393,7 @@ module.exports = function (grunt) {
           src: [
             'package.json',
             '.sequelizerc',
+            'Procfile',
             'migrations/**/*',
             '<%= yeoman.server %>/**/*'
           ]
@@ -669,9 +670,23 @@ module.exports = function (grunt) {
     this.async();
   });
 
+  grunt.registerTask('workers', 'start up backgorund service workers', function () {
+    this.async();
+    require("./server/app-workers");
+  });
+
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
-      return grunt.task.run(['build', 'env:all', 'env:prod', 'express:prod', 'wait', 'open', 'express-keepalive']);
+      return grunt.task.run([
+        'build',
+        'env:all',
+        'env:prod',
+        'express:prod',
+        'workers',
+        'wait',
+        'open',
+        'express-keepalive'
+      ]);
     }
 
     if (target === 'debug') {
@@ -696,6 +711,7 @@ module.exports = function (grunt) {
       'wiredep:client',
       'postcss',
       'express:dev',
+      'workers',
       'wait',
       'open',
       'watch'
