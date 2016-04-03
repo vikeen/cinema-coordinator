@@ -682,7 +682,6 @@ module.exports = function (grunt) {
         'env:all',
         'env:prod',
         'express:prod',
-        'workers',
         'wait',
         'open',
         'express-keepalive'
@@ -711,7 +710,6 @@ module.exports = function (grunt) {
       'wiredep:client',
       'postcss',
       'express:dev',
-      'workers',
       'wait',
       'open',
       'watch'

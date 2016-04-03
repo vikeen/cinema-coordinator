@@ -2,22 +2,24 @@
 
 (function () {
 
-  CreateCinemaModalService.$inject = ["$uibModal"];
-  function CreateCinemaModalService($uibModal) {
+  CreateCinemaModalService.$inject = ["$uibModal", "TrelloService"];
+  function CreateCinemaModalService($uibModal, TrelloService) {
 
     return {
       openAddCinemaModel: openAddCinemaModel
     };
 
     function openAddCinemaModel(show) {
-      $uibModal.open({
-        templateUrl: 'app/main/create_cinema_card.html',
-        controller: 'CreateCinemaModalController',
-        controllerAs: 'vm',
-        bindToController: true,
-        resolve: {
-          show: show
-        }
+      TrelloService.authorize().then(function () {
+        $uibModal.open({
+          templateUrl: 'app/main/create_cinema_card.html',
+          controller: 'CreateCinemaModalController',
+          controllerAs: 'vm',
+          bindToController: true,
+          resolve: {
+            show: show
+          }
+        });
       });
     }
   }
@@ -25,12 +27,13 @@
 
   class CreateCinemaModalController {
 
-    constructor(TrelloService, $uibModalInstance, show, TvMazeService) {
+    constructor(TrelloService, $uibModalInstance, show, TvMazeService, ChecklistsService) {
       const self = this;
 
       self.TvMazeService = TvMazeService;
       self.TrelloService = TrelloService;
       self.$uibModalInstance = $uibModalInstance;
+      self.ChecklistsService = ChecklistsService;
       self.show = show;
       self.boards = [];
       self.board = {};
@@ -41,13 +44,11 @@
         self.show.episodes = episodes;
       });
 
-      self.TrelloService.authorize().then(function () {
-        self.TrelloService.boards().then(function (boards) {
-          self.boards = boards;
-          self.board = boards[0] || {};
+      self.TrelloService.boards().then(function (boards) {
+        self.boards = boards;
+        self.board = boards[0] || {};
 
-          self.fetchListsForBoard(self.board);
-        });
+        self.fetchListsForBoard(self.board);
       });
     }
 
@@ -55,16 +56,16 @@
     ok(show) {
       const self = this;
 
-      self.TrelloService.createCinemaCard(show.name, show.summary, self.list.id).then(function (card) {
-        self.TrelloService.addChecklistToCard("Episodes", card.id).then(function (checklist) {
-          self.show.episodes.forEach(function (episode) {
-            self.TrelloService.addItemToChecklist(checklist.id, {
-              name: "s" + episode.season + "e" + episode.number + " - " + episode.name
-            });
-          // self.$uibModalInstance.close();
-          });
+      self.TrelloService.createCinemaCard(show.name, show.summary, self.list.id)
+        .then(function (card) {
+          return self.TrelloService.addChecklistToCard("Episodes", card.id)
+        })
+        .then(function (checklist) {
+          return self.ChecklistsService.addItems(checklist.id, self.show.episodes)
+        })
+        .then(function () {
+          return self.$uibModalInstance.close();
         });
-      });
     }
 
     cancel() {
