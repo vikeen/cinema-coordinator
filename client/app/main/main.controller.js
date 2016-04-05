@@ -10,7 +10,7 @@
       this.TrelloService = TrelloService;
       this.CreateCinemaModal = CreateCinemaModal;
       this.search = "Game of";
-      this.shows = [];
+      this.shows;
     }
 
     $onInit() {

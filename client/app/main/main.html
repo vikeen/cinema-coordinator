@@ -17,33 +17,35 @@
   </div>
   </div>
   <div class="container">
-    <table class="table" ng-if="vm.shows.length">
-      <thead>
-      <tr>
-        <th><!-- image --></th>
-        <th>Name</th>
-        <th class="text-right">Premiered</th>
-        <th>Genres</th>
-        <th>Summary</th>
-        <th class="text-right"></th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr ng-repeat="show in vm.shows">
-        <td>
-          <img class="main__show-image" ng-src="{{show.image.medium || show.image.original}}"/>
-        </td>
-        <td>{{show.name}}</td>
-        <td class="text-right">{{show.premiered |date:'yyyy'}}</td>
-        <td>
-          <span class="main__show-genre label label-primary" ng-repeat="genre in show.genres">{{genre}}</span>
-        </td>
-        <td ng-bind-html="show.summary | limitTo:200"></td>
-        <td class="text-right">
-          <button class="btn btn-primary" ng-click="vm.openAddCinemaModel(show)">Add To Trello</button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <div ng-if="vm.shows.length">
+      <ul class="main__media-list">
+        <li class="col-xs-12 col-md-6" ng-repeat="show in vm.shows">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2>{{show.name}}
+                <small>{{show.premiered |date:'yyyy'}}</small>
+              </h2>
+              <ul class="main__genre-list">
+                <li class="main__show-genre label label-primary" ng-repeat="genre in show.genres">{{genre}}</li>
+              </ul>
+            </div>
+            <div class="panel-body">
+              <div class="media">
+                <div class="media-left pull-left">
+                  <img class="main__show-image media-object" ng-src="{{show.image.medium || '/assets/images/default-movie.png'}}"/>
+                </div>
+                <div class="media-body">
+                  <p ng-bind-html="show.summary || 'No summary information'"></p>
+                  <button class="btn btn-primary pull-right" ng-click="vm.openAddCinemaModel(show)">Add To Trello</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="alert alert-danger"
+         ng-if="vm.shows && !vm.shows.length">No results found
+    </div>
   </div>
 </div>
