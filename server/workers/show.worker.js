@@ -1,7 +1,8 @@
 "use strict";
 
 var jackrabbit = require('jackrabbit'),
-  config = require('../config/environment');
+  config = require('../config/environment'),
+  seasonWorker = require("./season.worker");
 
 
 module.exports = new ShowWorker();
@@ -23,6 +24,17 @@ ShowWorker.prototype.consumer = function () {
 };
 
 ShowWorker.prototype.__consume = function (data, ack) {
-  console.log(this.name, "recieved data");
+  var show = data.show,
+    trelloListId = data.trelloListId;
+
+  console.log(this.name, "received show [show:", show.name, "] for [list: ", trelloListId, "]");
+
+  // make http post for show card here
+
+  var trelloCardId = 1;
+  show.seasons.forEach(function(season) {
+    seasonWorker.publish(season, trelloCardId);
+  });
+
   ack();
 };
