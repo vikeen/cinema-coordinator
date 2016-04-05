@@ -1,10 +1,10 @@
 'use strict';
 
 import {Router} from 'express';
-import * as controller from './checklists.controller';
+import * as controller from './shows.controller.js';
 
 var router = new Router();
 
-router.post('/:id', controller.create);
+router.post("/", controller.create);
 
 module.exports = router;

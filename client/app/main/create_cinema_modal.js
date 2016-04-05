@@ -27,13 +27,13 @@
 
   class CreateCinemaModalController {
 
-    constructor(TrelloService, $uibModalInstance, show, TvMazeService, ChecklistsService) {
+    constructor(TrelloService, $uibModalInstance, show, TvMazeService, ShowsService) {
       const self = this;
 
       self.TvMazeService = TvMazeService;
       self.TrelloService = TrelloService;
       self.$uibModalInstance = $uibModalInstance;
-      self.ChecklistsService = ChecklistsService;
+      self.ShowsService = ShowsService;
       self.show = show;
       self.boards = [];
       self.board = {};
@@ -56,16 +56,9 @@
     ok(show) {
       const self = this;
 
-      self.TrelloService.createCinemaCard(show.name, show.summary, self.list.id)
-        .then(function (card) {
-          return self.TrelloService.addChecklistToCard("Episodes", card.id)
-        })
-        .then(function (checklist) {
-          return self.ChecklistsService.addItems(checklist.id, self.show.episodes)
-        })
-        .then(function () {
-          return self.$uibModalInstance.close();
-        });
+      self.ShowsService.create(show, self.list.id).then(function () {
+        return self.$uibModalInstance.close();
+      });
     }
 
     cancel() {

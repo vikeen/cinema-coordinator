@@ -2,11 +2,9 @@
 
 (function () {
 
-  function TrelloService($q, $filter) {
+  function TrelloService($q) {
     const service = {
       authorize: authorize,
-      createCinemaCard: createCinemaCard,
-      addChecklistToCard: addChecklistToCard,
       me: me,
       boards: boards,
       board: board,
@@ -79,39 +77,6 @@
 
       Trello.get("/boards/" + id + "/lists", function (response) {
         return deferred.resolve(response);
-      }, function (error) {
-        return deferred.reject(error);
-      });
-
-      return deferred.promise;
-    }
-
-    function addChecklistToCard(name, cardId) {
-      let deferred = $q.defer(),
-        newChecklist = {
-          idCard: cardId,
-          name: $filter("stripHtml")(name)
-        };
-
-      Trello.post("/checklists", newChecklist, function (response) {
-        return deferred.resolve(response);
-      }, function (error) {
-        return deferred.reject(error);
-      });
-
-      return deferred.promise;
-    }
-
-    function createCinemaCard(name, description, listId) {
-      let deferred = $q.defer(),
-        newCard = {
-          name: $filter("stripHtml")(name),
-          desc: $filter("stripHtml")(description),
-          idList: listId
-        };
-
-      Trello.post('/cards/', newCard, function (data) {
-        return deferred.resolve(data);
       }, function (error) {
         return deferred.reject(error);
       });
