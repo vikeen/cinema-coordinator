@@ -1,6 +1,7 @@
 "use strict";
 
-var jackrabbit = require('jackrabbit'),
+var Trello = require("../components/trello"),
+  jackrabbit = require('jackrabbit'),
   config = require('../config/environment'),
   episodeWorker = require("./episode.worker");
 
@@ -14,9 +15,13 @@ function SeasonWorker() {
   this.queue = this.exchange.queue({name: this.name, durable: true});
 }
 
-SeasonWorker.prototype.publish = function (season, trelloCardId) {
+SeasonWorker.prototype.publish = function (season, trelloCardId, trelloToken) {
   this.exchange
-    .publish({season: season, trelloCardId: trelloCardId}, {key: this.name});
+    .publish({
+      season: season,
+      trelloCardId: trelloCardId,
+      trelloToken: trelloToken
+    }, {key: this.name});
 };
 
 SeasonWorker.prototype.consumer = function () {
@@ -25,17 +30,17 @@ SeasonWorker.prototype.consumer = function () {
 
 SeasonWorker.prototype.__consume = function (data, ack) {
   var season = data.season,
-    trelloCardId = data.trelloCardId;
+    trelloCardId = data.trelloCardId,
+    trello = Trello(data.trelloToken);
 
-  console.log(this.name, "received season with", season.length, "episodes for [card:", trelloCardId, "]");
+  trello.createSeason(season, trelloCardId).then(function (newTrelloChecklist) {
+      season.episodes.forEach(function (episode) {
+        episodeWorker.publish(episode, newTrelloChecklist.id, data.trelloToken);
+      });
 
-  // make http post for show checklist here
-
-  var trelloChecklistId = 1;
-
-  season.forEach(function(episode) {
-    episodeWorker.publish(episode, trelloChecklistId);
-  });
-
-  ack();
+      ack();
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
 };

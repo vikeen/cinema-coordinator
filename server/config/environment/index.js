@@ -32,6 +32,10 @@ var all = {
     session: process.env.CINEMA_COORDINATOR_SESSION_SECRET
   },
 
+  trello: {
+    key: process.env.CINEMA_COORDINATOR_TRELLO_API_KEY
+  },
+
   google: {
     clientID:     process.env.CINEMA_COORDINATOR_GOOGLE_ID || 'id',
     clientSecret: process.env.CINEMA_COORDINATOR_GOOGLE_SECRET || 'secret',

@@ -2,7 +2,7 @@
 
 (function () {
 
-  function ShowsService($http) {
+  function ShowsService($http, $filter) {
     var uri = "/api/shows";
 
     const service = {
@@ -11,6 +11,7 @@
 
 
     function create(show, trelloListId) {
+      // trim episodes dataset
       show.episodes = show.episodes.map(function(episode) {
         return {
           name: episode.name,
@@ -18,17 +19,22 @@
           number: episode.number
         }
       });
-      show.seasons = _.toArray(_.groupBy(show.episodes, "season"));
+
+      show.seasons = _.map(_.groupBy(show.episodes, "season"), function(episodes, key) {
+        return { name: "Season " + key, episodes: episodes};
+      });
 
       show = angular.copy({
         id: show.id,
-        name: show.name,
-        seasons: show.seasons
+        name: $filter("stripHtml")(show.name),
+        seasons: show.seasons,
+        summary: $filter("stripHtml")(show.summary)
       });
 
       return $http.post(uri, {
         show: show,
-        listId: trelloListId
+        listId: trelloListId,
+        trelloToken: localStorage["trello_token"]
       });
     }
 

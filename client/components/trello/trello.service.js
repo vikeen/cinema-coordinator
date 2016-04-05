@@ -22,7 +22,7 @@
           write: true
         },
         expiration: "never",
-        success: function () {
+        success: function (response) {
           return deferred.resolve();
         },
         error: function (error) {

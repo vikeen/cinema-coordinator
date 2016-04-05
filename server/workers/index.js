@@ -6,11 +6,15 @@ var jackrabbit = require('jackrabbit'),
 
 
 module.exports = function () {
-  return new Connector().then(function () {
-    require("./show.worker").consumer();
-    require("./season.worker").consumer();
-    require("./episode.worker").consumer();
-  });
+  try {
+    return new Connector().then(function () {
+      require("./show.worker").consumer();
+      require("./season.worker").consumer();
+      require("./episode.worker").consumer();
+    });
+  } catch(e) {
+    console.error(e.stack);
+  }
 };
 
 

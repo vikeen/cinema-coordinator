@@ -1,6 +1,7 @@
 "use strict";
 
-var jackrabbit = require('jackrabbit'),
+var Trello = require("../components/trello"),
+  jackrabbit = require('jackrabbit'),
   config = require('../config/environment'),
   seasonWorker = require("./season.worker");
 
@@ -14,9 +15,13 @@ function ShowWorker() {
   this.queue = this.exchange.queue({name: this.name, durable: true});
 }
 
-ShowWorker.prototype.publish = function (show, trelloListId) {
+ShowWorker.prototype.publish = function (show, trelloListId, trelloToken) {
   this.exchange
-    .publish({show: show, trelloListId: trelloListId}, {key: this.name});
+    .publish({
+      show: show,
+      trelloListId: trelloListId,
+      trelloToken: trelloToken
+    }, {key: this.name});
 };
 
 ShowWorker.prototype.consumer = function () {
@@ -25,16 +30,18 @@ ShowWorker.prototype.consumer = function () {
 
 ShowWorker.prototype.__consume = function (data, ack) {
   var show = data.show,
-    trelloListId = data.trelloListId;
+    trelloListId = data.trelloListId,
+    trello = Trello(data.trelloToken);
 
-  console.log(this.name, "received show [show:", show.name, "] for [list: ", trelloListId, "]");
+  trello.createShow(show, trelloListId)
+    .then(function (newTrelloCard) {
+      show.seasons.forEach(function (season) {
+        seasonWorker.publish(season, newTrelloCard.id, data.trelloToken);
+      });
 
-  // make http post for show card here
-
-  var trelloCardId = 1;
-  show.seasons.forEach(function(season) {
-    seasonWorker.publish(season, trelloCardId);
-  });
-
-  ack();
+      ack();
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
 };

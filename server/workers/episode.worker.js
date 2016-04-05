@@ -1,6 +1,7 @@
 "use strict";
 
-var jackrabbit = require('jackrabbit'),
+var Trello = require("../components/trello"),
+  jackrabbit = require('jackrabbit'),
   config = require('../config/environment');
 
 
@@ -13,11 +14,12 @@ function EpisodeWorker() {
   this.queue = this.exchange.queue({name: this.name, durable: true});
 }
 
-EpisodeWorker.prototype.publish = function (episode, trelloChecklistId) {
+EpisodeWorker.prototype.publish = function (episode, trelloChecklistId, trelloToken) {
   this.exchange
     .publish({
       episode: episode,
-      trelloChecklistId: trelloChecklistId
+      trelloChecklistId: trelloChecklistId,
+      trelloToken: trelloToken
     }, {key: this.name});
 };
 
@@ -27,11 +29,15 @@ EpisodeWorker.prototype.consumer = function () {
 
 EpisodeWorker.prototype.__consume = function (data, ack) {
   var episode = data.episode,
-    trelloChecklistId = trelloChecklistId;
+    trelloChecklistId = data.trelloChecklistId,
+    trello = Trello(data.trelloToken);
 
-  console.log(this.name, "received episode [", episode.name, "] episodes for [checklist:", trelloChecklistId, "]");
 
-  // make api call to create checklist item here
-
-  ack();
+  trello.createEpisode(episode, trelloChecklistId)
+    .then(function () {
+      ack();
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
 };
